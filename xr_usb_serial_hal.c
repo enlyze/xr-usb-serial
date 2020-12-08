@@ -487,10 +487,18 @@ int xr_usb_serial_set_line(struct xr_usb_serial *xr_usb_serial, struct usb_cdc_l
         gpio_mode |= 0x300;
     }
 		
-    xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_flow_addr, flow);
-    xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_gpio_mode_addr, gpio_mode);
-	return 0;
-	 
+	// rs485,rs422 FD/HD mode
+	if (xr_usb_serial->rs485_422_en)
+	{
+		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_flow_addr, 0x00);
+		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_gpio_mode_addr, 0x0B);
+	}
+	else
+	{
+		//rs232, default mode
+		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_flow_addr, flow);
+		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_gpio_mode_addr, gpio_mode);
+	}
 
  }
 
