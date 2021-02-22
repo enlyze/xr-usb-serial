@@ -450,7 +450,7 @@ int xr_usb_serial_set_line(struct xr_usb_serial *xr_usb_serial, struct usb_cdc_l
 	}
 	return ret;
 }
-int xr_usb_serial_set_flow_mode(struct xr_usb_serial *xr_usb_serial,
+void xr_usb_serial_set_flow_mode(struct xr_usb_serial *xr_usb_serial,
  					struct tty_struct *tty, unsigned int cflag)
 {
 	unsigned int flow;
