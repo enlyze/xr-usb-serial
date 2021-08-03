@@ -1796,7 +1796,7 @@ static int xr_usb_serial_suspend(struct usb_interface *intf, pm_message_t messag
 	if (cnt)
 		return 0;
 
-	if (test_bit(ASYNCB_INITIALIZED, &xr_usb_serial->port.flags))
+	if (tty_port_initialized(&xr_usb_serial->port))
 		stop_data_traffic(xr_usb_serial);
 
 	return 0;
@@ -1817,7 +1817,7 @@ static int xr_usb_serial_resume(struct usb_interface *intf)
 	if (cnt)
 		return 0;
 
-	if (test_bit(ASYNCB_INITIALIZED, &xr_usb_serial->port.flags)) {
+	if (tty_port_initialized(&xr_usb_serial->port)) {
 		rv = usb_submit_urb(xr_usb_serial->ctrlurb, GFP_NOIO);
 
 		spin_lock_irq(&xr_usb_serial->write_lock);
@@ -1851,7 +1851,7 @@ static int xr_usb_serial_reset_resume(struct usb_interface *intf)
 #else
    	struct tty_struct *tty;
 #endif
-	if (test_bit(ASYNCB_INITIALIZED, &xr_usb_serial->port.flags)){
+	if (tty_port_initialized(&xr_usb_serial->port)) {
 #if LINUX_VERSION_CODE > KERNEL_VERSION(3, 9, 0)
 	tty_port_tty_hangup(&xr_usb_serial->port, false);
 #else
