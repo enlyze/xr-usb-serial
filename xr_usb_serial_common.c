@@ -66,6 +66,19 @@ static struct xr_usb_serial *xr_usb_serial_table[XR_USB_SERIAL_TTY_MINORS];
 
 static DEFINE_MUTEX(xr_usb_serial_table_lock);
 
+static inline struct tty_driver *alloc_tty_driver(unsigned int lines)
+{
+       struct tty_driver *ret = tty_alloc_driver(lines, 0);
+       if (IS_ERR(ret))
+               return NULL;
+       return ret;
+}
+
+void put_tty_driver(struct tty_driver *d)
+{
+       tty_driver_kref_put(d);
+}
+
 /*
  * xr_usb_serial_table accessors
  */
@@ -804,7 +817,7 @@ static int xr_usb_serial_tty_write(struct tty_struct *tty,
 	return count;
 }
 
-static int xr_usb_serial_tty_write_room(struct tty_struct *tty)
+static unsigned int xr_usb_serial_tty_write_room(struct tty_struct *tty)
 {
 	struct xr_usb_serial *xr_usb_serial = tty->driver_data;
 	/*
@@ -814,7 +827,7 @@ static int xr_usb_serial_tty_write_room(struct tty_struct *tty)
 	return xr_usb_serial_wb_is_avail(xr_usb_serial) ? xr_usb_serial->writesize : 0;
 }
 
-static int xr_usb_serial_tty_chars_in_buffer(struct tty_struct *tty)
+static unsigned int xr_usb_serial_tty_chars_in_buffer(struct tty_struct *tty)
 {
 	struct xr_usb_serial *xr_usb_serial = tty->driver_data;
 	/*
