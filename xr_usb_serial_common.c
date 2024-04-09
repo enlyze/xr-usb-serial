@@ -1112,7 +1112,7 @@ static int xr_usb_serial_tty_ioctl(struct tty_struct *tty,
 }
 
 static void xr_usb_serial_tty_set_termios(struct tty_struct *tty,
-						struct ktermios *termios_old)
+						const struct ktermios *termios_old)
 {
 	struct xr_usb_serial *xr_usb_serial = tty->driver_data;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 7, 0)
